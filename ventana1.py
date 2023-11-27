@@ -1,9 +1,17 @@
 import sys
 
+
 from siguiente2 import Siguiente2
 from siguiente3 import Siguiente3
 from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QApplication, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QApplication, QLineEdit,QMessageBox
+
+# Guardar el valor original de sys.stdout
+original_stdout = sys.stdout
+
+# Redirigir la salida estándar a un archivo
+sys.stdout = open('salida_log.txt', 'w')
+
 
 
 class Siguiente(QMainWindow):
@@ -74,11 +82,25 @@ class Siguiente(QMainWindow):
         self.editPass.setFixedWidth(780)
         self.editPass.move(310, 472)
         self.editPass.setStyleSheet("background-color: white;")
+        self.editPass.setEchoMode(QLineEdit.Password)
 
     def metodo_siguiente2(self):
         self.hide()
         self.siguiente2 = Siguiente2()
         self.siguiente2.show()
+
+        def metodo_siguiente2(self):
+            # Obtener la información ingresada en la interfaz
+            info_a_guardar = f"Nombre: {self.editName.text()}, Contraseña: {self.editPass.text()}"
+
+            # Guardar la información en un archivo txt
+            with open('informacion.txt', 'a') as archivo:
+                archivo.write(info_a_guardar + '\n')
+
+            # Ocultar la ventana actual y mostrar la siguiente
+            self.hide()
+            self.siguiente2 = Siguiente2()
+            self.siguiente2.show()
 
     def metodo_iniciar_sesion(self):
         self.name = self.editName.text()
@@ -89,9 +111,11 @@ class Siguiente(QMainWindow):
             self.siguiente3 = Siguiente3()
             self.siguiente3.show()
         else:
-            print("Usuario incorrecto")
-            self.editName.setText("")
-            self.editPass.setText("")
+
+            error_message = "Usuario incorrecto, por favor verifique sus credenciales."
+            QMessageBox.warning(self, "Error de inicio de sesión", error_message, QMessageBox.Ok)
+            self.editName.clear()
+            self.editPass.clear()
 
 
 
@@ -107,3 +131,4 @@ if __name__ == '__main__' :
 
     # Para terminar la aplicacion
     sys.exit(app.exec_())
+
