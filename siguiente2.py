@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QApplication, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QApplication, QLineEdit,QMessageBox
 from siguiente3 import Siguiente3
 
 
@@ -23,7 +23,7 @@ class Siguiente2(QMainWindow):
         self.fondo = QLabel(self)
 
         # definimos la imagen
-        self.imagenFondo = QPixmap("imagenes/Bienvenidos.png")
+        self.imagenFondo = QPixmap("imagenes/Bienvenidos.jpg")
 
         # agregamos la imagen en el fondo
         self.fondo.setPixmap(self.imagenFondo)
@@ -41,6 +41,10 @@ class Siguiente2(QMainWindow):
         self.letra1.setFamily("Arial")
         self.letra1.setPointSize(20)
 
+        self.letra2 = QFont()
+        self.letra2.setFamily("Arial")
+        self.letra2.setPointSize(20)
+
 
         self.boton1 = QPushButton(self)
         self.boton1.setText("Crear")
@@ -52,35 +56,84 @@ class Siguiente2(QMainWindow):
         self.boton1.setFixedHeight(50)
         self.boton1.clicked.connect(self.metodo_siguiente3)
 
-        self.editName = QLineEdit(self)
-        self.editName.setFixedWidth(600)
-        self.editName.move(390, 172)
-        self.editName.setStyleSheet("background-color: white;")
+        self.editName1 = QLineEdit(self)
+        self.editName1.setFixedWidth(600)
+        self.editName1.move(390, 172)
+        self.editName1.setStyleSheet("background-color: white;")
 
-        self.editName = QLineEdit(self)
-        self.editName.setFixedWidth(600)
-        self.editName.move(390, 279)
-        self.editName.setStyleSheet("background-color: white;")
+        self.editName2= QLineEdit(self)
+        self.editName2.setFixedWidth(600)
+        self.editName2.move(390, 279)
+        self.editName2.setStyleSheet("background-color: white;")
 
-        self.editName = QLineEdit(self)
-        self.editName.setFixedWidth(600)
-        self.editName.move(390, 392)
-        self.editName.setStyleSheet("background-color: white;")
+        self.editName3 = QLineEdit(self)
+        self.editName3.setFixedWidth(600)
+        self.editName3.move(390, 392)
+        self.editName3.setStyleSheet("background-color: white;")
 
-        self.editName = QLineEdit(self)
-        self.editName.setFixedWidth(600)
-        self.editName.move(390, 530)
-        self.editName.setStyleSheet("background-color: white;")
+        self.editName4 = QLineEdit(self)
+        self.editName4.setFixedWidth(600)
+        self.editName4.move(390, 530)
+        self.editName4.setStyleSheet("background-color: white;")
 
-        self.editName = QLineEdit(self)
-        self.editName.setFixedWidth(600)
-        self.editName.move(390, 665)
-        self.editName.setStyleSheet("background-color: white;")
+        self.editName5= QLineEdit(self)
+        self.editName5.setFixedWidth(600)
+        self.editName5.move(390, 665)
+        self.editName5.setStyleSheet("background-color: white;")
+
+
 
     def metodo_siguiente3(self):
+        self.datosCorrectos = True
+
+        if (
+                self.password.text() != self.password2.text()
+        ):
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Los passwords no son iguales")
+
+            self.ventanaDialogo.exec_()
+
+        if (
+                self.nombreYapellidos.text() == ''
+                or self.mail.text() == ''
+                or self.password.text() == ''
+                or self.password2.text() == ''
+                or self.numero.text() == ''
+        ):
+            self.datosCorrectos = False
+
+            self.mensaje.setText("Debe ingresar todos los campos")
+
+            self.ventanaDialogo.exec_()
+
+        if self.datosCorrectos:
+            # Escribir los datos en binarios.
+            self.file = open('datos/cliente.txt', 'ab')
+
+            self.file.write(bytes(self.nombreYapellidos.text() + ";"
+                                  + self.mail.text() + ";"
+                                  + self.password.text() + ";"
+                                  + self.password2.text() + ";"
+                                  + self.numero.text() + "\n", encoding='UTF-8'))
+            self.file.close()
+
+            self.file = open('datos/cliente.txt', 'rb')
+            while self.file:
+                linea = self.file.readline().decode('UTF-8')
+                print(linea)
+                if linea == '':
+                    break
+            self.file.close()
+
         self.hide()
-        self.siguiente3 = Siguiente3()
+        self.siguiente3 = Siguiente3(self)
         self.siguiente3.show()
+
+
+
+
 
 
 if __name__ == '__main__' :
